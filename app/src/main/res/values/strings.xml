@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Media Attachment</string>
+    <string name="upload_file">Upload File</string>
+    <string name="select_attachment">Select Attachment</string>
+    <string name="photo_jpeg">photo.JPEG</string>
+    <string name="video_mp4">Video.mp4</string>
+    <string name="audio_mp3">Audio.mp3</string>
+    <string name="compressing_video">Compressing video...</string>
+</resources>

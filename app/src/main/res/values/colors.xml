@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#5C2D91</color>
+    <color name="colorPrimaryDark">#962172</color>
+    <color name="colorSecondary">#92278F</color>
+    <color name="colorAccent">#962172</color>
+    <color name="colorAccentDark">#962172</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#13B4CD</color>
+    <color name="box_outline">#F3F3F3</color>
+    <color name="bg_file">#FBFBFB</color>
+    <color name="txt_branch">#919191</color>
+    <color name="txt_satisfy">#595959</color>
+    <color name="background_visits"> #FAFAFA</color>
+    <color name="item_count_background"> #F7AF36</color>
+    <color name="txt_visits">#C7BBDC</color>
+    <color name="date_picker">#C5C5C54D</color>
+    <color name="gray">#B4B4B4</color>
+    <color name="color_comment">#F8FEFF</color>
+    <color name="color_flagship_text">#9A9A9A</color>
+    <color name="tex_box_color">#B4B4B4</color>
+    <color name="txt_wrong_pass_color">#E70707</color>
+</resources>
