@@ -16,6 +16,7 @@ class AudioWaveformView @JvmOverloads constructor(
     private var amplitudes = floatArrayOf()
     private var spikes = mutableListOf<RectF>()
     private var progress = 0f
+    private var currentTime = 0L
 
     init {
         paint.color = Color.CYAN
@@ -46,14 +47,17 @@ class AudioWaveformView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        val progressWidth = width * progress
         spikes.forEachIndexed { index, spike ->
-            paint.color = if (index.toFloat() / spikes.size < progress) Color.CYAN else Color.LTGRAY
-            canvas.drawRoundRect(spike, 2f, 2f, paint) // Smaller corner radius
+            val spikeProgress = spike.left / width.toFloat()
+            paint.color = if (spikeProgress <= progress) Color.CYAN else Color.LTGRAY
+            canvas.drawRoundRect(spike, 2f, 2f, paint)
         }
     }
 
-    fun setProgress(progress: Float) {
-        this.progress = progress
+    fun setProgress(currentTimeMs: Long, durationMs: Long) {
+        this.currentTime = currentTimeMs
+        this.progress = if (durationMs > 0) currentTimeMs.toFloat() / durationMs.toFloat() else 0f
         invalidate()
     }
 

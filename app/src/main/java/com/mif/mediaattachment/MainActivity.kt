@@ -38,7 +38,9 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.PermissionListener
 import com.mif.mediaattachment.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -572,6 +574,7 @@ class MainActivity : AppCompatActivity() {
         val audioWaveform = dialogView.findViewById<AudioWaveformView>(R.id.audioWaveform)
         val tvFileName = dialogView.findViewById<TextView>(R.id.tvFileName)
         val btnDone = dialogView.findViewById<TextView>(R.id.btnDone)
+        var job: Job? = null
 
         tvFileName.text = getFileName(audioUri)
         mediaPlayer = MediaPlayer.create(context, audioUri)
@@ -583,9 +586,9 @@ class MainActivity : AppCompatActivity() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     val touchProgress = event.x / audioWaveform.width
-                    audioWaveform.setProgress(touchProgress)
                     val newPosition = (touchProgress * (mediaPlayer?.duration ?: 0)).toInt()
                     mediaPlayer?.seekTo(newPosition)
+                    audioWaveform.setProgress(newPosition.toLong(), (mediaPlayer?.duration ?: 1).toLong())
                     true
                 }
                 else -> false
@@ -603,12 +606,22 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer?.start()
             btnPlay.visibility = View.GONE
             btnPause.visibility = View.VISIBLE
+
+            job = lifecycleScope.launch {
+                while (isActive && mediaPlayer?.isPlaying == true) {
+                    val currentPosition = mediaPlayer?.currentPosition ?: 0
+                    val duration = mediaPlayer?.duration ?: 1
+                    audioWaveform.setProgress(currentPosition.toLong(), duration.toLong())
+                    delay(16) // تحديث ~60 مرة في الثانية للحصول على حركة سلسة
+                }
+            }
         }
 
         btnPause.setOnClickListener {
             mediaPlayer?.pause()
             btnPause.visibility = View.GONE
             btnPlay.visibility = View.VISIBLE
+            job?.cancel()
         }
 
         btnDone.setOnClickListener {
@@ -625,14 +638,15 @@ class MainActivity : AppCompatActivity() {
 
         // Update Waveform every second
         lifecycleScope.launch {
-            while (mediaPlayer != null && mediaPlayer?.isPlaying == true) {
-                val progress = mediaPlayer?.currentPosition?.toFloat() ?: 0f
-                val duration = mediaPlayer?.duration?.toFloat() ?: 1f
-                audioWaveform.setProgress(progress / duration)
-                delay(100) // تحديث كل 100 مللي ثانية للحصول على حركة أكثر سلاسة
+            while (mediaPlayer != null) {
+                if (mediaPlayer?.isPlaying == true) {
+                    val currentPosition = mediaPlayer?.currentPosition?.toLong() ?: 0L
+                    val duration = mediaPlayer?.duration?.toLong() ?: 1L
+                    audioWaveform.setProgress(currentPosition, duration)
+                }
+                delay(16) // تحديث ~60 مرة في الثانية للحصول على حركة أكثر سلاسة
             }
         }
-
         dialog.show()
     }
     private fun saveAudioUri(uri: Uri) {
