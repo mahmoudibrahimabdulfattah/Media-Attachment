@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/ll_imageAttached"
+    android:layout_marginTop="5dp"
+    android:background="@color/bg_file">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_preview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_file"
+        android:drawableStart="@drawable/gallery"
+        android:drawableEnd="@drawable/preview"
+        android:drawablePadding="10dp"
+        android:text="Dokki_branch-branding.JPEG"
+        android:textColor="@color/txt_branch"
+        app:layout_constraintEnd_toStartOf="@+id/iv_deleteImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_deleteImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingHorizontal="10dp"
+        android:src="@drawable/delete"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_preview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

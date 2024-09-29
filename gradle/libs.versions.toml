@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.0-alpha15"
+agp = "8.2.2"
 dexter = "6.2.3"
 exoplayer = "2.19.1"
 ffmpeg-kit-min-gpl = "4.5.LTS"
