@@ -49,8 +49,6 @@ dependencies {
     implementation libs.exoplayer
     //ffmpeg video compressor
     implementation libs.ffmpeg.kit.min.gpl
-    //dexter for permission
-    implementation libs.dexter
     //Photo
     implementation libs.subsampling.scale.image.view
 }

@@ -1,6 +1,5 @@
 [versions]
 agp = "8.2.2"
-dexter = "6.2.3"
 exoplayer = "2.19.1"
 ffmpeg-kit-min-gpl = "4.5.LTS"
 kotlin = "1.8.21"
@@ -15,7 +14,6 @@ subsampling-scale-image-view = "3.10.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
-dexter = { module = "com.karumi:dexter", version.ref = "dexter" }
 exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
 ffmpeg-kit-min-gpl = { module = "com.arthenica:ffmpeg-kit-min-gpl", version.ref = "ffmpeg-kit-min-gpl" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
