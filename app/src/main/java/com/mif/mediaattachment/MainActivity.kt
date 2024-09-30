@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //PreviewVideo
+    //PreviewPhoto
     private fun showPhotoPreviewDialog(photoUri: Uri) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_photo_preview, null)
         val imageView = dialogView.findViewById<SubsamplingScaleImageView>(R.id.imageView)
@@ -272,6 +272,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    //PreviewVideo
     private fun showVideoPreviewDialog(videoUri: Uri) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_video_preview, null)
         val playerView = dialogView.findViewById<PlayerView>(R.id.playerView)
