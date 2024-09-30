@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -20,7 +21,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arthenica.ffmpegkit.FFmpegKit
@@ -62,7 +65,19 @@ class MainActivity : AppCompatActivity() {
     private val AUDIO_PICK_CODE = 101
     private val IMAGE_PICK_CODE = 102
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission granted, proceed with file picker
+            openFilePicker(currentFileType)
+        } else {
+            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private lateinit var currentFileType: FileType
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -98,34 +113,43 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Choose file type")
             .setItems(items) { _, which ->
-                when (which) {
-                    0 -> checkPermissionsAndOpenFilePicker(FileType.IMAGE)
-                    1 -> checkPermissionsAndOpenFilePicker(FileType.VIDEO)
-                    2 -> checkPermissionsAndOpenFilePicker(FileType.AUDIO)
+                currentFileType = when (which) {
+                    0 -> FileType.IMAGE
+                    1 -> FileType.VIDEO
+                    2 -> FileType.AUDIO
+                    else -> throw IllegalArgumentException("Invalid file type")
                 }
+                checkPermissionsAndOpenFilePicker(currentFileType)
             }
             .show()
     }
 
     private fun checkPermissionsAndOpenFilePicker(fileType: FileType) {
-        Dexter.withContext(this)
-            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) == PackageManager.PERMISSION_GRANTED -> {
                     openFilePicker(fileType)
                 }
-
-                override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                    Toast.makeText(this@MainActivity, "Permission Denied", Toast.LENGTH_SHORT).show()
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                 }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: com.karumi.dexter.listener.PermissionRequest,
-                    token: PermissionToken
-                ) {
-                    token.continuePermissionRequest()
+            }
+        } else {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    openFilePicker(fileType)
                 }
-            }).check()
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            }
+        }
     }
 
     private fun openFilePicker(fileType: FileType) {
